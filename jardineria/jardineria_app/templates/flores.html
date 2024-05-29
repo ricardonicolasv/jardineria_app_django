@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Flores{% endblock %}
+
+{% block contenido %}
+    <div class="container p-3 my-3 border text-dark text-center">
+        <div class="gallery">
+            <div class="content">
+                <img src="{% static 'imagen/flores/petunias.png' %}" id="imgn">
+                <p>Petunias</p>
+                <h6>$3.000</h6>
+                <a href="acceder.html">
+                    <button class="buy-1" id="btn">Comprar</button>
+                </a>
+            </div>
+
+            <div class="content">
+                <img src="{% static 'imagen/flores/rosa1.png' %}" id="imgn">
+                <p>Rosas</p>
+                <h6>$3.000</h6>
+                <a href="acceder.html">
+                    <button class="buy-2" id="btn">Comprar</button>
+                </a>
+            </div>
+
+            <div class="content">
+                <img src="{% static 'imagen/flores/girasol.png' %}" id="imgn">
+                <p>Girasoles</p>
+                <h6>$3.000</h6>
+                <a href="acceder.html">
+                    <button class="buy-3" id="btn">Comprar</button>
+                </a>
+            </div>
+
+            <div class="content">
+                <img src="{% static 'imagen/flores/tulipanes.png' %}" id="imgn">
+                <p>Tulipanes</p>
+                <h6>$3.000</h6>
+                <a href="acceder.html">
+                    <button class="buy-4" id="btn">Comprar</button>
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endblock %}

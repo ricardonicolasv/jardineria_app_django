@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Tierra de Hojas{% endblock %}
+
+{% block contenido %}
+
+    <div class="container p-3 my-3 border text-dark text-center">
+        <div class="gallery">
+            <div class="content">
+                <img src="{% static 'imagen/tierra/tiera.png' %}" id="imgn">
+                <p>Tierra de hojas compost 50L</p>
+                <h6>$4.635</h6>
+                <a href="acceder.html">
+                    <button class="buy-1" id="btn">Comprar</button>
+                </a>
+            </div>
+
+            <div class="content">
+                <img src="{% static 'imagen/tierra/tierra.png' %}" id="imgn">
+                <p>Tierra de hojas biologica 40L</p>
+                <h6>$6.500</h6>
+                <a href="acceder.html">
+                    <button class="buy-2" id="btn">Comprar</button>
+                </a>
+            </div>
+
+            <div class="content">
+                <img src="{% static 'imagen/tierra/tierra2.png' %}" id="imgn">
+                <p>TIERRA SUSTR MACETERO 20L</p>
+                <h6>$3.755</h6>
+                <a href="acceder.html">
+                    <button class="buy-3" id="btn">Comprar</button>
+                </a>
+            </div>
+
+            <div class="content">
+                <img src="{% static 'imagen/tierra/tierra3.png' %}" id="imgn">
+                <p>TIERRA SUSTR SUCULENTAS 20L</p>
+                <h6>$5.265</h6>
+                <a href="acceder.html">
+                    <button class="buy-4" id="btn">Comprar</button>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div>
+{% endblock %}
