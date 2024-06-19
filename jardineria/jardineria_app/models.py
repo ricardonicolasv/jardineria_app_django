@@ -1,6 +1,12 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
 from .tipos import *
+from django.contrib.auth.models import AbstractUser
+
+
+class User(AbstractUser):
+    rut=models.CharField(max_length=10, null=False)
+    direccion=models.CharField(max_length=500, null=False)
 
 class Producto (models.Model):
     codigo_producto=models.CharField(max_length=50,primary_key=True)
