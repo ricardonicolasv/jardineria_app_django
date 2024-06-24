@@ -7,6 +7,7 @@ from os import remove, path
 from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
+from .models import Producto
 
 def admin_page(request):
     return render(request, 'crud/administrador.html')
@@ -71,3 +72,13 @@ def crearcuenta(request):
         "form":form
     }
     return render(request, 'registration/crearcuenta.html',datos)
+def salir(request):
+    logout(request)
+    return redirect(to='home')
+def producto (request):
+    productos=Producto.objects.all()
+
+    datos={
+        "¨productos":productos
+    }
+    return render(request,'crud/productos.html', datos)
