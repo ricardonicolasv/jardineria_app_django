@@ -1,0 +1,44 @@
+{% extends "crud/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block titulo %}Pedido cliente{% endblock %}
+{% block contenido %}
+    <header id="header">
+        <h1>Pedidos</h1>
+    </header>
+
+    <div class="tabla p-2 my-2">
+        <table class="table">
+            <thead>
+              <tr>
+                <th scope="col">Imagen</th>
+                <th scope="col">Producto</th>
+                <th scope="col">Valor</th>
+                <th scope="col">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="images"><img src="{% static 'imagen/flores/petunias.png' %}" width="50px" height="50px"></td>
+                    <td>Petunias</td>
+                    <td>$3.000</td>
+                    <td>Cancelado</td>
+                </tr>
+                <tr>
+                    <td class="images"><img src="{% static 'imagen/suculentas/suculenta2.png' %}" width="50px" height="50px"></td>
+                    <td>Cactáceas</td>
+                    <td>$3.000</td>
+                    <td>Pendiente</td>
+                </tr>
+
+                <tr>
+                    <td class="images"><img src="{% static 'imagen/sustratos/vitasac.png' %}" width="50px" height="50px"></td>
+                    <td>Fertilizante para flores</td>
+                    <td>$2.490</td>
+                    <td>Completado</td>
+                </tr>
+            </tbody>
+          </table>
+    </div>
+</body>
+{% endblock contenido %}

@@ -1,0 +1,19 @@
+{% extends 'crud/base.html' %}
+{% load static %}
+
+{% block titulo %}Cuenta recuperada{% endblock %}
+
+{% block contenido %}
+    <div class="formulario">
+
+        <h1>Recuperar Cuenta</h1>
+        <form  method="get" action="Recuperardos.html">
+            <div class="username mb-2">
+                <label class="form-label">Correo</label>
+                <input type="email" class="form-control" id="email" placeholder="nombre@ejemplo.com" onclick="return validarFormulario()">
+                <div class="text-danger" id="msgcorreo"></div>
+            </div>
+            <button class="btn btn-success" type="submit" id="btnsubmit" onclick="return validarFormulario()">Continuar</button>
+        </form>
+     </div>
+{% endblock %}

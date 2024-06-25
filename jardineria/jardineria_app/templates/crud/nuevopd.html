@@ -1,0 +1,32 @@
+{% extends "crud/base.html" %}
+{% load static %}
+{% load crispy_forms_tags %}
+{% block titulo %}Nuevo Pedido{% endblock %}
+
+
+{% block contenido %}
+    <div class="formulario">
+        <h1>Registrar Producto</h1>
+        <form method="get" action="admin.html">
+         <div class="username">
+            <label class="label-form">Nombre Producto</label>
+             <input class="form-control" type="text" id="nuevopd" onblur="validarFormulario()">
+             <div class="text-danger" id="msgprod"></div>
+            </div>
+         <div class="username">
+            <label>Cantidad Stock</label>
+             <input class="form-control" type="number" id="stock" onblur="validarFormulario()">
+             <div class="text-danger" id="msgstock"></div>
+            </div>
+         <div class="username">
+            <label>Precio</label>
+            <input class="form-control" type="text" id="valor" onblur="validarFormulario()">
+            <div class="text-danger" id="msgvalor"></div>
+        </div>
+            <input class="form-control" type="file" >
+            <button class="btn btn-success mt-4" type="submit"id="btnsubmit" onclick="return validarFormulario()">Registrar Producto</button>
+        </form>
+     </div>
+</body>
+
+{% endblock contenido %}

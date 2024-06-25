@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block titulo %}Cuenta recuperada{% endblock %}
+
+{% block contenido %}
+    <div class="formulario text-center">
+        <h1>¡Correo enviado!</h1>
+        <span >Enviamos un correo al email 
+            <p class="email">clienteolvidocontraseña@gmail.com</p> 
+            con las instrucciones para que recuperes el acceso a tu cuenta.
+        </span>
+        <div >
+            <a href="index.html"><input type="submit" value="Inicio"></a>
+        </div>
+    </div>
+{% endblock %}
