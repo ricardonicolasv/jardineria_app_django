@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from datetime import date, datetime
 from django.shortcuts import get_object_or_404, redirect
-from .forms import  UserForm,ProductoForm
+from .forms import  UserForm,ProductoForm,UpdProductoForm
 from django.contrib import messages
 from os import remove, path
 from django.conf import settings
@@ -61,31 +61,40 @@ def home(request):
 
 def crearcuenta(request):
     form=UserForm()
-    
     if request.method=="POST":
         form=UserForm(data=request.POST)
         if form.is_valid():
             form.save()
             return redirect(to="login")
-    
     datos={
         "form":form
     }
     return render(request, 'registration/crearcuenta.html',datos)
+
 def salir(request):
     logout(request)
     return redirect(to='home')
-def producto (request):
-    producto=Producto.objects.all()
 
-    datos={
-        "producto":producto
+def producto(request):
+    productos = Producto.objects.all()
+
+    # Filtrar productos de flores
+    productos_flores = productos.filter(tipo='flores')
+
+    datos = {
+        "productos_generales": productos,
+        "productos_flores": productos_flores
     }
-    return render(request,'crud/productos.html', datos)
-def crearproducto(request):
-    
-    formulario=ProductoForm()
 
+    if request.path == '/productos/':
+        return render(request, 'crud/productos.html', datos)
+    elif request.path == '/flores/':
+        return render(request, 'crud/flores.html', datos)
+    else:
+        return render(request, 'error.html', {'message': 'Página no encontrada'})
+
+def crearproducto(request):
+    formulario=ProductoForm()
     if request.method=="POST":
         formulario=ProductoForm(request.POST, files=request.FILES)
         if formulario.is_valid():
@@ -98,14 +107,28 @@ def crearproducto(request):
     datos={
         "formulario":formulario
     }
-
     return render(request,'crud/crearproducto.html', datos)
+
 def detalles_producto(request, id):
-    
     #persona=Persona.objects.get(rut=id)
     producto=get_object_or_404(Producto,codigo_producto=id)
-    
     datos={
         "producto":producto
     }
     return render(request,'crud/detalles_producto.html',datos)
+
+def modificarproducto(request,id):
+    producto=get_object_or_404(Producto, codigo_producto=id)
+    form=UpdProductoForm(instance=producto)
+    if request.method=="POST":
+         form=UpdProductoForm(request.POST, files=request.FILES, instance=producto)
+         if form.is_valid():
+             form.save()
+             messages.set_level(request,messages.WARNING)
+             messages.warning(request,"Producto modificado")
+             return redirect(to="productos")
+    datos={
+        'producto':producto,
+        'form':form
+    }
+    return render(request,'crud/modificarproducto.html',datos)

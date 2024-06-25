@@ -16,14 +16,14 @@
           <th>NOMBRE PRODUCTO</th>
           <th>CANTIDAD</th>
           <th>TIPO</th>
-          <th>PRACIO</th>
+          <th>PRECIO</th>
           
           <th>ACCIONES</th>
         </tr>
       </thead>
       <tbody>
 
-        {% for p in producto %}
+        {% for p in productos_generales %}
         <td><img src="{{p.imagen.url}}" alt="fotito" height="100"> </td>
         <td>{{p.codigo_producto}}</td>
         <td>{{p.nombre_producto}}</td>

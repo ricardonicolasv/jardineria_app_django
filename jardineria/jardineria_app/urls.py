@@ -4,7 +4,7 @@ from django.conf.urls.static import static
 from .views import (
     admin_page, carro, flores, base, listaprod, maceteros, nuevopd,
     nuevousuario, pedidosad, pedidoscli, recuperar, recuperardos,
-    suculentas, sustratos, tierra, usuarios, home, crearcuenta, salir, producto,crearproducto,detalles_producto
+    suculentas, sustratos, tierra, usuarios, home, crearcuenta, salir, producto,crearproducto,detalles_producto,modificarproducto
 )
 
 urlpatterns = [
@@ -29,6 +29,7 @@ urlpatterns = [
     path('salir/',salir,name='salir'),
     path('productos/',producto, name='productos'),
     path('detalles_producto/<id>',detalles_producto, name='detalles_producto'),
+    path('modificarproducto/<id>',modificarproducto, name='modificarproducto'),
     path('crearproducto/',crearproducto, name='crearproducto')
 ]
 
