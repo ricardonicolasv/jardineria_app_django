@@ -8,3 +8,4 @@ class AdmProducto(admin.ModelAdmin):
         list_filter=['cantidad','tipo','precio']
 
 admin.site.register(Producto, AdmProducto)
+admin.site.register(User)
