@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from datetime import date, datetime
 from django.shortcuts import get_object_or_404, redirect
-from .forms import  UserForm
+from .forms import  UserForm,ProductoForm
 from django.contrib import messages
 from os import remove, path
 from django.conf import settings
@@ -76,9 +76,36 @@ def salir(request):
     logout(request)
     return redirect(to='home')
 def producto (request):
-    productos=Producto.objects.all()
+    producto=Producto.objects.all()
 
     datos={
-        "¨productos":productos
+        "producto":producto
     }
     return render(request,'crud/productos.html', datos)
+def crearproducto(request):
+    
+    formulario=ProductoForm()
+
+    if request.method=="POST":
+        formulario=ProductoForm(request.POST, files=request.FILES)
+        if formulario.is_valid():
+            formulario.save()
+            #from django.contrib import messages
+            messages.set_level(request,messages.SUCCESS)
+            messages.success(request, "Producto creado con exito!!!")
+            return redirect(to="productos")
+        
+    datos={
+        "formulario":formulario
+    }
+
+    return render(request,'crud/crearproducto.html', datos)
+def detalles_producto(request, id):
+    
+    #persona=Persona.objects.get(rut=id)
+    producto=get_object_or_404(Producto,codigo_producto=id)
+    
+    datos={
+        "producto":producto
+    }
+    return render(request,'crud/detalles_producto.html',datos)
