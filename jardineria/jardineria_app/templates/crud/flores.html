@@ -1,66 +1,14 @@
 {% extends 'crud/base.html' %}
 {% load static %}
 
-{% block titulo %}Flores{% endblock %}
+{% block titulo %}Productos de Flores{% endblock %}
 
 {% block contenido %}
-    <div class="container p-3 my-3 border text-dark text-center">
-        <div class="gallery">
-            <div class="content">
-                <img src="{% static 'imagen/flores/petunias.png' %}" id="imgn">
-                <p>Petunias</p>
-                <h6>$3.000</h6>
-                {% if user.is_authenticated %}
-                <a href="{% url 'pedidoscli' %}">
-                {% else %}
-                <a href="{% url 'login' %}">
-                {% endif %}
-                    <button class="buy-1" id="btn">Comprar</button>
-                </a>
-            </div>
-
-            <div class="content">
-                <img src="{% static 'imagen/flores/rosa1.png' %}" id="imgn">
-                <p>Rosas</p>
-                <h6>$3.000</h6>
-                {% if user.is_authenticated %}
-                <a href="{% url 'pedidoscli' %}">
-                {% else %}
-                <a href="{% url 'login' %}">
-                {% endif %}
-                    <button class="buy-2" id="btn">Comprar</button>
-                </a>
-            </div>
-
-            <div class="content">
-                <img src="{% static 'imagen/flores/girasol.png' %}" id="imgn">
-                <p>Girasoles</p>
-                <h6>$3.000</h6>
-                {% if user.is_authenticated %}
-                <a href="{% url 'pedidoscli' %}">
-                {% else %}
-                <a href="{% url 'login' %}">
-                {% endif %}
-                    <button class="buy-3" id="btn">Comprar</button>
-                </a>
-            </div>
-
-            <div class="content">
-                <img src="{% static 'imagen/flores/tulipanes.png' %}" id="imgn">
-                <p>Tulipanes</p>
-                <h6>$3.000</h6>
-                {% if user.is_authenticated %}
-                <a href="{% url 'pedidoscli' %}">
-                {% else %}
-                <a href="{% url 'login' %}">
-                {% endif %}
-                    <button class="buy-4" id="btn">Comprar</button>
-                </a>
-            </div>
-       </div>
-       <div class="col-sm-10">
-        <h3>Registro de Producto</h3>
-       <table class="table table-hover">
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-sm-12">
+      <h3>Productos de Flores Disponibles</h3>
+      <table class="table table-hover">
         <thead>
           <tr>
             <th>IMAGEN</th>
@@ -68,25 +16,27 @@
             <th>CANTIDAD</th>
             <th>TIPO</th>
             <th>PRECIO</th>
-            
             <th>ACCIONES</th>
           </tr>
         </thead>
         <tbody>
-  
-          {% for p in producto %}
-          <td><img src="{{p.imagen.url}}" alt="fotito" height="100"> </td>
-          <td>{{p.nombre_producto}}</td>
-          <td>{{p.cantidad}}</td>
-          <td>{{p.tipo}}</td>
-          <td>{{p.precio}}</td>
-          
-          <td><a href="{% url "detalles_producto" p.codigo_producto %}" role="button" class="btn btn-info btn-sm text-light">Ver detalles</a></td>
+          {% for p in productos_flores %}
+          <tr>
+            <td><img src="{{ p.imagen.url }}" alt="Imagen de {{ p.nombre_producto }}" height="100"></td>
+            <td>{{ p.nombre_producto }}</td>
+            <td>{{ p.cantidad }}</td>
+            <td>{{ p.tipo }}</td>
+            <td>{{ p.precio }}</td>
+            <td><a href="{% url 'carro' %}" class="btn btn-success btn-sm text-light">Agregar al Carro</a></td>
+          </tr>
+          {% empty %}
+          <tr>
+            <td colspan="6">No hay productos de flores disponibles.</td>
           </tr>
           {% endfor %}
-          <tr>
         </tbody>
       </table>
     </div>
-    </div>
-    {% endblock %}
+  </div>
+</div>
+{% endblock %}
