@@ -6,7 +6,7 @@
     <div class="col-sm-1">
     </div>
   <div class="col-sm-10">
-    <h3>Registro de Producto</h3>
+    <h3>Listado de Producto</h3>
     {% if perms.jardineria.add_producto %}
     <a href="{% url "crearproducto" %}" role='button' class='btn btn-sm text-primary' style="font-weight:bold">+ Crear Producto</a>
     {% endif %}
@@ -33,8 +33,11 @@
         <td>{{p.tipo}}</td>
         <td>{{p.precio}}</td>
         
-        <td><a href="{% url "detalles_producto" p.codigo_producto %}" role="button" class="btn btn-info btn-sm text-light">Ver detalles</a></td>
-        </tr>
+        <td><a href="{% url "detalles_producto" p.codigo_producto %}" role="button" class="btn btn-info btn-sm text-light">Ver detalles</a>
+        {% if perms.jardineria.change_producto%}
+        <a href="{% url "modificarproducto" p.codigo_producto %}" role="button" class="btn btn-warning btn-sm text-light mt-2">Modificar</a> </td>
+        {% endif %}
+      </tr>
         {% endfor %}
         <tr>
       </tbody>

@@ -7,7 +7,7 @@ from django.conf import settings
 
 
 class User(AbstractUser):
-    rut=models.CharField(max_length=10, null=False)
+    rut=models.CharField(max_length=12, null=False)
     direccion=models.CharField(max_length=500, null=False)
 
 class Producto (models.Model):
@@ -28,4 +28,3 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido de {self.usuario.username} - {self.producto.nombre_producto}"
-
