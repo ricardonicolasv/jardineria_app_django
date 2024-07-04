@@ -21,8 +21,8 @@ class UserForm(UserCreationForm):
 
 
 class ProductoForm(forms.ModelForm):
-    codigo_producto=forms.CharField(max_length=50,required=True)
-    nombre_producto=forms.CharField(max_length=50,required=True)
+    codigo_producto=forms.CharField(min_length=2,max_length=50,required=True)
+    nombre_producto=forms.CharField(min_length=2,max_length=50,required=True)
     precio= forms.IntegerField(min_value=1, max_value=150000000)
 
     class Meta:

@@ -49,7 +49,7 @@
                     <button type="button" class="btn btn-success dropdown-toggle"
                         data-bs-toggle="dropdown">Administrar Productos</button>
                     <ul class="dropdown-menu">
-                        <li><a class="dropdown-item" href="{% url 'productos' %}">Ver productos</a></li>
+                        <li><a class="dropdown-item" href="{% url 'productos' %}">Listado de productos</a></li>
                         {% if perms.jardineria.add_producto %}
                         <li><a class="dropdown-item" href="{% url 'crearproducto' %}">Crear Producto</a></li>
                         {% endif%}
