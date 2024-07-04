@@ -1,10 +1,10 @@
 {% extends "crud/base.html" %}
 {% load static %}
 {% load crispy_forms_tags %}
-{% block titulo %}Carro de compras{% endblock %}
+{% block titulo %}Pedido cliente{% endblock %}
 {% block contenido %}
     <header id="header">
-        <h1>Carro</h1>
+        <h1>Pedidos</h1>
     </header>
 
     <div class="tabla p-2 my-2">
@@ -54,7 +54,7 @@
         <div class="row">
             <div class="col-sm-12">
                 <h4>Total del pedido: ${{ total_pedido }}</h4>
-                <form method="post" action="#">
+                <form method="post" action="{% url 'detalle_pedido' %}">
                     {% csrf_token %}
                     <button type="submit" class="btn btn-success btn-lg">Pagar</button>
                 </form>

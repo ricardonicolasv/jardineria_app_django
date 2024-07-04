@@ -2,12 +2,12 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import (
-    carro, 
-    flores, base, maceteros, pedido, suculentas, sustratos, tierra, home,
+    detalle_pedido, 
+    flores, base, maceteros, pedido, suculentas, sustratos, tierra, home,seguimiento_pedido,
     crearcuenta, salir, producto, crearproducto, detalles_producto, modificarproducto, agregar_a_pedido, pedidoscli, actualizar_cantidad, eliminar_pedido, 
 )
 urlpatterns = [
-    path('carro/', carro, name='carro'),
+    path('detalle_pedido/', detalle_pedido, name='detalle_pedido'),
     path('flores/', flores, name='flores'),
     path('base/', base, name='base'),
     path('', home, name='home'),
@@ -25,6 +25,7 @@ urlpatterns = [
     path('agregar_a_pedido/<str:producto_id>/', agregar_a_pedido, name='agregar_a_pedido'),
     path('actualizar_cantidad/<int:pedido_id>/', actualizar_cantidad, name='actualizar_cantidad'),
     path('eliminar_pedido/<int:pedido_id>/', eliminar_pedido, name='eliminar_pedido'),
+    path('seguimiento_pedido/', seguimiento_pedido, name='seguimiento_pedido'),
 ]
 
 if settings.DEBUG:

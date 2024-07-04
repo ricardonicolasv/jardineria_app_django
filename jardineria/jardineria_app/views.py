@@ -99,6 +99,53 @@ def modificarproducto(request,id):
     return render(request,'crud/modificarproducto.html',datos)
 ### FUNCIONES DE PEDIDO-------------------------############################################################
 @login_required
+@permission_required('jardineria_app.view_pedido')
+def seguimiento_pedido(request):
+    pedidos = Pedido.objects.filter(usuario=request.user)
+    detalles_pedidos = []
+
+    for pedido in pedidos:
+        subtotal = pedido.producto.precio * pedido.cantidad
+        detalles_pedidos.append({
+            'producto': pedido.producto,
+            'cantidad': pedido.cantidad,
+            'subtotal': subtotal,
+        })
+    
+    total_pedido = sum(item['subtotal'] for item in detalles_pedidos)
+    
+    context = {
+        'detalles_pedidos': detalles_pedidos,
+        'total_pedido': total_pedido,
+        'usuario': request.user,
+    }
+    
+    return render(request, 'crud/seguimiento_pedido.html', context)
+
+@login_required
+@permission_required('jardineria_app.view_pedido')
+def detalle_pedido(request):
+    pedidos = Pedido.objects.filter(usuario=request.user)
+    
+    total_pedido = 0
+    detalles_pedidos = []
+    for pedido in pedidos:
+        subtotal = pedido.producto.precio * pedido.cantidad
+        total_pedido += subtotal
+        detalles_pedidos.append({
+            'producto': pedido.producto,
+            'cantidad': pedido.cantidad,
+            'subtotal': subtotal,
+        })
+    
+    context = {
+        'detalles_pedidos': detalles_pedidos,
+        'total_pedido': total_pedido,
+        'usuario': request.user,
+    }
+    
+    return render(request, 'crud/detalle_pedido.html', context)
+@login_required
 def agregar_a_pedido(request, producto_id):
     producto = get_object_or_404(Producto, pk=producto_id)
     usuario = request.user
@@ -166,8 +213,6 @@ def salir(request):
 def admin_page(request):
     return render(request, 'crud/administrador.html')
 
-def carro(request):
-    return render(request, 'crud/carro.html')
 
 def base(request):
     return render(request, 'crud/base.html')
