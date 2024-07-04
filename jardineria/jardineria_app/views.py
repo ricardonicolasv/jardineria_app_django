@@ -96,16 +96,26 @@ def modificarproducto(request,id):
     return render(request,'crud/modificarproducto.html',datos)
 
 @login_required
-def carro(request, id):
-    producto = get_object_or_404(Producto, codigo_producto=id)
-    pedido, creado = Pedido.objects.get_or_create(usuario=request.user, producto=producto)
-    if not creado:
+def agregar_al_carro(request, codigo_producto):
+    producto = get_object_or_404(Producto, codigo_producto=codigo_producto)
+    pedido, created = Pedido.objects.get_or_create(usuario=request.user, producto=producto)
+    if not created:
         pedido.cantidad += 1
         pedido.save()
-    messages.success(request, f"{producto.nombre_producto} ha sido añadido al carro.")
-    
-    # Redirigir a la página anterior
-    return HttpResponseRedirect(request.META.get('HTTP_REFERER', '/'))
+    messages.success(request, f"{producto.nombre_producto} ha sido añadido al carrito.")
+    return redirect('carro')
+
+@login_required
+def carro(request):
+    pedidos = Pedido.objects.filter(usuario=request.user)
+    total_a_pagar = sum(pedido.producto.precio * pedido.cantidad for pedido in pedidos)
+
+    datos = {
+        'carro': pedidos,
+        'total_a_pagar': total_a_pagar,
+    }
+
+    return render(request, 'crud/carro.html', datos)
 
 @login_required
 def eliminar_del_carro(request, id):
@@ -124,16 +134,6 @@ def procesar_pago(request):
 def vaciar_carro(request):
     Pedido.objects.filter(usuario=request.user).delete()
     messages.success(request, 'Carro vaciado correctamente.')
-    return redirect('carro')
-
-@login_required
-def agregar_al_carro(request, codigo_producto):
-    producto = get_object_or_404(Producto, codigo_producto=codigo_producto)
-    pedido, created = Pedido.objects.get_or_create(usuario=request.user, producto=producto)
-    if not created:
-        pedido.cantidad += 1
-        pedido.save()
-    messages.success(request, 'Producto agregado al carro.')
     return redirect('carro')
 
 def crearcuenta(request):
@@ -162,28 +162,8 @@ def carro(request):
 def base(request):
     return render(request, 'crud/base.html')
 
-def listaprod(request):
-    return render(request, 'crud/listaprod.html')
-
-def nuevopd(request):
-    return render(request, 'crud/nuevopd.html')
-
-def nuevousuario(request):
-    return render(request, 'crud/nuevousuario.html')
-
-def pedidosad(request):
-    return render(request, 'crud/pedidosad.html')
-
 def pedido(request):
     return render(request, 'crud/pedidoscli.html')
 
-def recuperar(request):
-    return render(request, 'crud/recuperar.html')
-
-def recuperardos(request):
-    return render(request, 'crud/recuperardos.html')
-
-def usuarios(request):
-    return render(request, 'crud/usuarios.html')
 def home(request):
     return render(request, 'crud/home.html')

@@ -27,7 +27,7 @@
             <td>{{ p.cantidad }}</td>
             <td>{{ p.tipo }}</td>
             <td>{{ p.precio }}</td>
-            <td><a href="{% url 'carro' %}" class="btn btn-success btn-sm text-light">Agregar al Carro</a></td>
+            <td><a href="{% url 'agregar_al_carro' p.codigo_producto %}" class="btn btn-success btn-sm text-light">Agregar al Carro</a></td>
           </tr>
           {% empty %}
           <tr>
