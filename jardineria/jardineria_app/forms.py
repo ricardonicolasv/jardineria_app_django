@@ -15,3 +15,9 @@ class ProductoForm(forms.ModelForm):
     class Meta:
         model = Producto
         fields = ['codigo_producto','nombre_producto','cantidad','tipo','precio','imagen']
+
+class UpdProductoForm(forms.ModelForm):
+       
+    class Meta:
+        model = Producto
+        fields = ['nombre_producto','cantidad','tipo','precio','imagen']

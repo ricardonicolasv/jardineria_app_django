@@ -1,80 +1,52 @@
+#views.py
 from django.shortcuts import render
-from datetime import date, datetime
 from django.shortcuts import get_object_or_404, redirect
-from .forms import  UserForm,ProductoForm
+from .forms import  UserForm,ProductoForm,UpdProductoForm
 from django.contrib import messages
-from os import remove, path
-from django.conf import settings
 from django.contrib.auth import logout
 from django.contrib.auth.models import User
-from .models import Producto
+from .models import Producto,Pedido
+from .tipos import TIPO_PRODUCTO
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
-def admin_page(request):
-    return render(request, 'crud/administrador.html')
 
-def carro(request):
-    return render(request, 'crud/carro.html')
-
+@login_required
 def flores(request):
-    return render(request, 'crud/flores.html')
-
-def base(request):
-    return render(request, 'crud/base.html')
-
-def listaprod(request):
-    return render(request, 'crud/listaprod.html')
-
-def maceteros(request):
-    return render(request, 'crud/maceteros.html')
-
-def nuevopd(request):
-    return render(request, 'crud/nuevopd.html')
-
-def nuevousuario(request):
-    return render(request, 'crud/nuevousuario.html')
-
-def pedidosad(request):
-    return render(request, 'crud/pedidosad.html')
-
-def pedidoscli(request):
-    return render(request, 'crud/pedidoscli.html')
-
-def recuperar(request):
-    return render(request, 'crud/recuperar.html')
-
-def recuperardos(request):
-    return render(request, 'crud/recuperardos.html')
-
-def suculentas(request):
-    return render(request, 'crud/suculentas.html')
-
-def sustratos(request):
-    return render(request, 'crud/sustratos.html')
-
-def tierra(request):
-    return render(request, 'crud/tierra.html')
-
-def usuarios(request):
-    return render(request, 'crud/usuarios.html')
-def home(request):
-    return render(request, 'crud/home.html')
-
-def crearcuenta(request):
-    form=UserForm()
-    
-    if request.method=="POST":
-        form=UserForm(data=request.POST)
-        if form.is_valid():
-            form.save()
-            return redirect(to="login")
-    
-    datos={
-        "form":form
+    productos_flores = Producto.objects.filter(tipo='FLORES')
+    datos = {
+        "productos_flores": productos_flores
     }
-    return render(request, 'registration/crearcuenta.html',datos)
-def salir(request):
-    logout(request)
-    return redirect(to='home')
+    return render(request, 'crud/flores.html', datos)
+@login_required
+def maceteros(request):
+    productos_maceteros = Producto.objects.filter(tipo='MACETEROS')
+    datos = {
+        "productos_maceteros": productos_maceteros
+    }
+    return render(request, 'crud/maceteros.html', datos)
+@login_required
+def suculentas(request):
+    productos_suculentas = Producto.objects.filter(tipo='SUCULENTAS')
+    datos = {
+        "productos_suculentas": productos_suculentas
+    }
+    return render(request, 'crud/suculentas.html', datos)
+@login_required
+def sustratos(request):
+    productos_sustratos = Producto.objects.filter(tipo='SUSTRATOS')
+    datos = {
+        "productos_sustratos": productos_sustratos
+    }
+    return render(request, 'crud/sustratos.html', datos)
+@login_required
+def tierra(request):
+    productos_tierras = Producto.objects.filter(tipo='TIERRA DE HOJA')
+    datos = {
+        "productos_tierras": productos_tierras
+    }
+    return render(request, 'crud/tierra.html', datos)
+### FUNCIONES DE PRODUCTOS-------------------------############################################################
 def producto (request):
     producto=Producto.objects.all()
 
@@ -82,10 +54,10 @@ def producto (request):
         "producto":producto
     }
     return render(request,'crud/productos.html', datos)
-def crearproducto(request):
-    
-    formulario=ProductoForm()
 
+@login_required
+def crearproducto(request):
+    formulario=ProductoForm()
     if request.method=="POST":
         formulario=ProductoForm(request.POST, files=request.FILES)
         if formulario.is_valid():
@@ -98,14 +70,109 @@ def crearproducto(request):
     datos={
         "formulario":formulario
     }
-
     return render(request,'crud/crearproducto.html', datos)
+@login_required
 def detalles_producto(request, id):
-    
     #persona=Persona.objects.get(rut=id)
     producto=get_object_or_404(Producto,codigo_producto=id)
-    
     datos={
         "producto":producto
     }
     return render(request,'crud/detalles_producto.html',datos)
+@login_required
+def modificarproducto(request,id):
+    producto=get_object_or_404(Producto, codigo_producto=id)
+    form=UpdProductoForm(instance=producto)
+    if request.method=="POST":
+         form=UpdProductoForm(request.POST, files=request.FILES, instance=producto)
+         if form.is_valid():
+             form.save()
+             messages.set_level(request,messages.WARNING)
+             messages.warning(request,"Producto modificado")
+             return redirect(to="productos")
+    datos={
+        'producto':producto,
+        'form':form
+    }
+    return render(request,'crud/modificarproducto.html',datos)
+### FUNCIONES DE PEDIDO-------------------------############################################################
+@login_required
+def agregar_a_pedido(request, producto_id):
+    producto = get_object_or_404(Producto, pk=producto_id)
+    usuario = request.user
+    cantidad = 1  # Aquí puedes adaptar la lógica para obtener la cantidad deseada
+
+    pedido, created = Pedido.objects.get_or_create(usuario=usuario, producto=producto, defaults={'cantidad': cantidad})
+    if not created:
+        pedido.cantidad += 1
+        pedido.save()
+
+    messages.success(request, f"{producto.nombre_producto} ha sido agregado a tu pedido!")
+    return redirect('pedidoscli')  # Redirigir a la vista de pedidos del cliente
+
+@login_required
+def pedidoscli(request):
+    pedidos = Pedido.objects.filter(usuario=request.user)
+    
+    total_pedido = sum(pedido.producto.precio * pedido.cantidad for pedido in pedidos)
+    
+    context = {
+        'pedidos': pedidos,
+        'total_pedido': total_pedido,
+    }
+    
+    return render(request, 'crud/pedidoscli.html', context)
+
+@login_required
+def actualizar_cantidad(request, pedido_id):
+    pedido = get_object_or_404(Pedido, pk=pedido_id, usuario=request.user)
+    if request.method == "POST":
+        nueva_cantidad = int(request.POST.get('cantidad'))
+        if nueva_cantidad > 0 and nueva_cantidad <= pedido.producto.cantidad:
+            pedido.cantidad = nueva_cantidad
+            pedido.save()
+            messages.success(request, "Cantidad actualizada correctamente.")
+        else:
+            messages.error(request, "Cantidad inválida.")
+    return redirect('pedidoscli')
+
+@login_required
+def eliminar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, pk=pedido_id, usuario=request.user)
+    if request.method == "POST":
+        pedido.delete()
+        messages.success(request, "Producto eliminado del pedido.")
+    return redirect('pedidoscli')
+
+### FUNCIONES DE USUARIO-------------------------############################################################
+def crearcuenta(request):
+    form=UserForm()
+    if request.method=="POST":
+        form=UserForm(data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect(to="login")
+    datos={
+        "form":form
+    }
+    return render(request, 'registration/crearcuenta.html',datos)
+
+def salir(request):
+    logout(request)
+    return redirect(to='home')
+
+
+def admin_page(request):
+    return render(request, 'crud/administrador.html')
+
+def carro(request):
+    return render(request, 'crud/carro.html')
+
+def base(request):
+    return render(request, 'crud/base.html')
+
+def pedido(request):
+    return render(request, 'crud/pedidoscli.html')
+
+def home(request):
+    return render(request, 'crud/home.html')
