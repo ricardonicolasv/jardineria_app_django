@@ -7,7 +7,7 @@ from django.contrib.auth import logout
 from django.contrib.auth.models import User
 from .models import Producto,Pedido
 from .tipos import TIPO_PRODUCTO
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
 
 
@@ -55,7 +55,7 @@ def producto (request):
     }
     return render(request,'crud/productos.html', datos)
 
-@login_required
+@permission_required('jardineria.add_producto')
 def crearproducto(request):
     formulario=ProductoForm()
     if request.method=="POST":
@@ -79,7 +79,7 @@ def detalles_producto(request, id):
         "producto":producto
     }
     return render(request,'crud/detalles_producto.html',datos)
-@login_required
+@permission_required('jardineria.change_producto')
 def modificarproducto(request,id):
     producto=get_object_or_404(Producto, codigo_producto=id)
     form=UpdProductoForm(instance=producto)
