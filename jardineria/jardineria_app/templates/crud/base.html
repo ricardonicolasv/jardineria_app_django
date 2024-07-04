@@ -42,6 +42,12 @@
                 {% if user.is_authenticated %}
                 <a href="{% url 'pedidoscli' %}">
                     <button type="button" class="btn btn-success">
+                        Carro
+                    </button>
+                </a>
+
+                <a href="{% url 'carro' %}">
+                    <button type="button" class="btn btn-success">
                         Pedidos
                     </button>
                 </a>

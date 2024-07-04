@@ -1,6 +1,7 @@
 #views.py
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect
+from django.views import View
 from .forms import  UserForm,ProductoForm,UpdProductoForm
 from django.contrib import messages
 from django.contrib.auth import logout
@@ -9,6 +10,7 @@ from .models import Producto,Pedido
 from .tipos import TIPO_PRODUCTO
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
+
 
 
 @login_required
@@ -109,7 +111,6 @@ def agregar_a_pedido(request, producto_id):
 
     messages.success(request, f"{producto.nombre_producto} ha sido agregado a tu pedido!")
     return redirect('pedidoscli')  # Redirigir a la vista de pedidos del cliente
-
 @login_required
 def pedidoscli(request):
     pedidos = Pedido.objects.filter(usuario=request.user)

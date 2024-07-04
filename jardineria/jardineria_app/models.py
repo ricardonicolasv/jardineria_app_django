@@ -28,4 +28,3 @@ class Pedido(models.Model):
 
     def __str__(self):
         return f"Pedido de {self.usuario.username} - {self.producto.nombre_producto}"
-
