@@ -20,18 +20,23 @@
           </tr>
         </thead>
         <tbody>
-          {% for p in productos_tierras %}
+          {% for producto in productos_tierras %}
           <tr>
-            <td><img src="{{ p.imagen.url }}" alt="Imagen de {{ p.nombre_producto }}" height="100"></td>
-            <td>{{ p.nombre_producto }}</td>
-            <td>{{ p.cantidad }}</td>
-            <td>{{ p.tipo }}</td>
-            <td>{{ p.precio }}</td>
-            <td><a href="{% url 'detalles_producto' p.codigo_producto %}" class="btn btn-success btn-sm text-light">Agregar al Carro</a></td>
+            <td><img src="{{ producto.imagen.url }}" alt="Imagen de {{ producto.nombre_producto }}" height="100"></td>
+            <td>{{ producto.nombre_producto }}</td>
+            <td>{{ producto.cantidad }}</td>
+            <td>{{ producto.tipo }}</td>
+            <td>{{ producto.precio }}</td>
+            <td>
+              <form method="post" action="{% url 'agregar_a_pedido' producto.codigo_producto %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-sm text-light">Agregar al Carro</button>
+              </form>
+            </td>
           </tr>
           {% empty %}
           <tr>
-            <td colspan="6">No hay productos de Tierra de Hojas disponibles.</td>
+            <td colspan="6">No hay productos de tierra de hojas disponibles.</td>
           </tr>
           {% endfor %}
         </tbody>

@@ -27,11 +27,16 @@
             <td>{{ p.cantidad }}</td>
             <td>{{ p.tipo }}</td>
             <td>{{ p.precio }}</td>
-            <td><a href="{% url 'detalles_producto' p.codigo_producto %}" class="btn btn-success btn-sm text-light">Agregar al Carro</a></td>
+            <td>
+              <form method="post" action="{% url 'agregar_a_pedido' p.codigo_producto %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-success btn-sm text-light">Agregar al Carro</button>
+              </form>
+            </td>
           </tr>
           {% empty %}
           <tr>
-            <td colspan="6">No hay productos de Suculentas disponibles.</td>
+            <td colspan="6">No hay productos de suculentas disponibles.</td>
           </tr>
           {% endfor %}
         </tbody>

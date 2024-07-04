@@ -46,6 +46,7 @@ def tierra(request):
         "productos_tierras": productos_tierras
     }
     return render(request, 'crud/tierra.html', datos)
+### FUNCIONES DE PRODUCTOS-------------------------############################################################
 def producto (request):
     producto=Producto.objects.all()
 
@@ -94,48 +95,56 @@ def modificarproducto(request,id):
         'form':form
     }
     return render(request,'crud/modificarproducto.html',datos)
-
+### FUNCIONES DE PEDIDO-------------------------############################################################
 @login_required
-def agregar_al_carro(request, codigo_producto):
-    producto = get_object_or_404(Producto, codigo_producto=codigo_producto)
-    pedido, created = Pedido.objects.get_or_create(usuario=request.user, producto=producto)
+def agregar_a_pedido(request, producto_id):
+    producto = get_object_or_404(Producto, pk=producto_id)
+    usuario = request.user
+    cantidad = 1  # Aquí puedes adaptar la lógica para obtener la cantidad deseada
+
+    pedido, created = Pedido.objects.get_or_create(usuario=usuario, producto=producto, defaults={'cantidad': cantidad})
     if not created:
         pedido.cantidad += 1
         pedido.save()
-    messages.success(request, f"{producto.nombre_producto} ha sido añadido al carrito.")
-    return redirect('carro')
+
+    messages.success(request, f"{producto.nombre_producto} ha sido agregado a tu pedido!")
+    return redirect('pedidoscli')  # Redirigir a la vista de pedidos del cliente
 
 @login_required
-def carro(request):
+def pedidoscli(request):
     pedidos = Pedido.objects.filter(usuario=request.user)
-    total_a_pagar = sum(pedido.producto.precio * pedido.cantidad for pedido in pedidos)
-
-    datos = {
-        'carro': pedidos,
-        'total_a_pagar': total_a_pagar,
+    
+    total_pedido = sum(pedido.producto.precio * pedido.cantidad for pedido in pedidos)
+    
+    context = {
+        'pedidos': pedidos,
+        'total_pedido': total_pedido,
     }
-
-    return render(request, 'crud/carro.html', datos)
-
-@login_required
-def eliminar_del_carro(request, id):
-    pedido = get_object_or_404(Pedido, id=id, usuario=request.user)
-    pedido.delete()
-    messages.success(request, 'Producto eliminado del carro.')
-    return redirect('carro')
+    
+    return render(request, 'crud/pedidoscli.html', context)
 
 @login_required
-def procesar_pago(request):
-    # Lógica para procesar el pago
-    messages.success(request, 'Pago procesado correctamente.')
-    return redirect('carro')
+def actualizar_cantidad(request, pedido_id):
+    pedido = get_object_or_404(Pedido, pk=pedido_id, usuario=request.user)
+    if request.method == "POST":
+        nueva_cantidad = int(request.POST.get('cantidad'))
+        if nueva_cantidad > 0 and nueva_cantidad <= pedido.producto.cantidad:
+            pedido.cantidad = nueva_cantidad
+            pedido.save()
+            messages.success(request, "Cantidad actualizada correctamente.")
+        else:
+            messages.error(request, "Cantidad inválida.")
+    return redirect('pedidoscli')
 
 @login_required
-def vaciar_carro(request):
-    Pedido.objects.filter(usuario=request.user).delete()
-    messages.success(request, 'Carro vaciado correctamente.')
-    return redirect('carro')
+def eliminar_pedido(request, pedido_id):
+    pedido = get_object_or_404(Pedido, pk=pedido_id, usuario=request.user)
+    if request.method == "POST":
+        pedido.delete()
+        messages.success(request, "Producto eliminado del pedido.")
+    return redirect('pedidoscli')
 
+### FUNCIONES DE USUARIO-------------------------############################################################
 def crearcuenta(request):
     form=UserForm()
     if request.method=="POST":
