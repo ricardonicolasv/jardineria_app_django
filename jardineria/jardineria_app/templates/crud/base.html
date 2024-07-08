@@ -40,6 +40,11 @@
                     </ul>
                 </div>
                 {% if user.is_authenticated %}
+                <a href="{% url 'listado_usuarios' %}">
+                    <button type="button" class="btn btn-success">
+                        Usuarios
+                    </button>
+                </a>
                 <a href="{% url 'pedidoscli' %}">
                     <button type="button" class="btn btn-success">
                         Pedidos

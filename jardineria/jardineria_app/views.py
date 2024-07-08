@@ -1,5 +1,6 @@
 #views.py
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.contrib.auth.forms import UserChangeForm
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
 from .forms import  UserForm,ProductoForm,UpdProductoForm
@@ -10,6 +11,7 @@ from .models import Producto,Pedido
 from .tipos import TIPO_PRODUCTO
 from django.contrib.auth.decorators import login_required, permission_required
 from django.http import HttpResponseRedirect
+from django.views.generic import ListView
 
 
 
@@ -204,6 +206,27 @@ def crearcuenta(request):
         "form":form
     }
     return render(request, 'registration/crearcuenta.html',datos)
+
+class ListadoUsuariosView(ListView):
+    model = User
+    template_name = 'registration/listado_usuarios.html'
+    context_object_name = 'usuarios'
+
+def detalles_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    return render(request, 'registration/detalle_usuario.html', {'usuario': usuario})
+
+def modificar_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    if request.method == 'POST':
+        form = UserChangeForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_usuario', user_id=usuario.id)
+    else:
+        form = UserChangeForm(instance=usuario)
+    return render(request, 'registration/modificar_usuarios.html', {'form': form, 'usuario': usuario})
+
 
 def salir(request):
     logout(request)

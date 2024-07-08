@@ -1,0 +1,16 @@
+{% extends "crud/base.html" %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <h3>Detalles de Usuario</h3>
+  <ul>
+    <li>Username: {{ usuario.username }}</li>
+    <li>RUT: {{ usuario.rut }}</li>
+    <li>Nombre: {{ usuario.first_name }}</li>
+    <li>Apellido: {{ usuario.last_name }}</li>
+    <li>Email: {{ usuario.email }}</li>
+    <li>Dirección: {{ usuario.direccion }}</li>
+  </ul>
+  <a href="{% url 'listado_usuarios' %}" class="btn btn-primary">Volver al listado</a>
+</div>
+{% endblock contenido %}
