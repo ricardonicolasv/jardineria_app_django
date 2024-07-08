@@ -19,6 +19,23 @@ class UserForm(UserCreationForm):
     ])
     
 
+class UpdUserForm(forms.ModelForm):
+    rut = forms.CharField(label='RUT', max_length=12, validators=[
+        RegexValidator(
+            regex=r'^\d{7,8}[-]?[\dkK]$',
+            message='El RUT ingresado no es válido',
+            code='invalid_rut'
+        ),
+    ])
+
+    class Meta:
+        model = User
+        fields = ['username', 'rut', 'first_name', 'last_name', 'email', 'direccion']
+
+    def __init__(self, *args, **kwargs):
+        super(UpdUserForm, self).__init__(*args, **kwargs)
+        self.fields['username'].disabled = True  # Para evitar que se modifique el nombre de usuario
+
 
 class ProductoForm(forms.ModelForm):
     codigo_producto=forms.CharField(min_length=2,max_length=50,required=True)

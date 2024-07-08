@@ -2,10 +2,11 @@
 from django.shortcuts import render
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
-from .forms import  UserForm,ProductoForm,UpdProductoForm
+from .forms import  UserForm,ProductoForm,UpdProductoForm,UpdUserForm
 from django.contrib import messages
-from django.contrib.auth import logout
-from django.contrib.auth.models import User
+from django.contrib.auth import logout, get_user_model
+#from django.contrib.auth.models import User
+from jardineria_app.models import User
 from .models import Producto,Pedido
 from .tipos import TIPO_PRODUCTO
 from django.contrib.auth.decorators import login_required, permission_required
@@ -99,7 +100,6 @@ def modificarproducto(request,id):
     return render(request,'crud/modificarproducto.html',datos)
 ### FUNCIONES DE PEDIDO-------------------------############################################################
 @login_required
-@permission_required('jardineria_app.view_pedido')
 def seguimiento_pedido(request):
     pedidos = Pedido.objects.filter(usuario=request.user)
     detalles_pedidos = []
@@ -123,7 +123,6 @@ def seguimiento_pedido(request):
     return render(request, 'crud/seguimiento_pedido.html', context)
 
 @login_required
-@permission_required('jardineria_app.view_pedido')
 def detalle_pedido(request):
     pedidos = Pedido.objects.filter(usuario=request.user)
     
@@ -205,6 +204,45 @@ def crearcuenta(request):
     }
     return render(request, 'registration/crearcuenta.html',datos)
 
+@login_required
+@permission_required('auth.view_user')
+def listar_usuarios(request):
+    User = get_user_model()
+    usuarios = User.objects.all()
+    datos = {
+        "usuarios": usuarios
+    }
+    return render(request, 'crud/usuarios.html', datos)
+
+@login_required
+@permission_required('auth.view_user')
+def detalles_usuario(request, user_id):
+    User = get_user_model()
+    usuario = get_object_or_404(User, id=user_id)
+    datos = {
+        "usuario": usuario
+    }
+    return render(request, 'crud/detalles_usuario.html', datos)
+
+@login_required
+@permission_required('auth.change_user', raise_exception=True)
+def modificar_usuario(request, user_id):
+    User = get_user_model()
+    usuario = get_object_or_404(User, id=user_id)
+    
+    if request.method == 'POST':
+        form = UpdUserForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_usuario', user_id=user_id)  # Redirecciona al detalle del usuario modificado
+    else:
+        form = UpdUserForm(instance=usuario)
+    
+    datos = {
+        'form': form
+    }
+    return render(request, 'crud/modificar_usuario.html', datos)
+
 def salir(request):
     logout(request)
     return redirect(to='home')
@@ -217,8 +255,6 @@ def admin_page(request):
 def base(request):
     return render(request, 'crud/base.html')
 
-def pedido(request):
-    return render(request, 'crud/pedidoscli.html')
 
 def home(request):
     return render(request, 'crud/home.html')

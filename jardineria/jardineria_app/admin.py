@@ -11,3 +11,4 @@ class AdmProducto(admin.ModelAdmin):
 
 admin.site.register(Producto, AdmProducto)
 admin.site.register(User)
+admin.site.register(Pedido)

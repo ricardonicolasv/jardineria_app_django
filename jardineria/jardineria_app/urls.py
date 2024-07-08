@@ -3,10 +3,14 @@ from django.conf import settings
 from django.conf.urls.static import static
 from .views import (
     detalle_pedido, 
-    flores, base, maceteros, pedido, suculentas, sustratos, tierra, home,seguimiento_pedido,
+    flores, base, maceteros, listar_usuarios, detalles_usuario, modificar_usuario, suculentas, sustratos, tierra, home, seguimiento_pedido,
     crearcuenta, salir, producto, crearproducto, detalles_producto, modificarproducto, agregar_a_pedido, pedidoscli, actualizar_cantidad, eliminar_pedido, 
 )
+
 urlpatterns = [
+    path('usuarios/', listar_usuarios, name='listar_usuarios'),
+    path('usuarios/<int:user_id>/', detalles_usuario, name='detalles_usuario'),
+    path('usuarios/<int:user_id>/modificar/', modificar_usuario, name='modificar_usuario'),
     path('detalle_pedido/', detalle_pedido, name='detalle_pedido'),
     path('flores/', flores, name='flores'),
     path('base/', base, name='base'),
