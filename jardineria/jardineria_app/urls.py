@@ -4,7 +4,9 @@ from django.conf.urls.static import static
 from .views import (
     carro, 
     flores, base, maceteros, pedido, suculentas, sustratos, tierra, home,
-    crearcuenta, salir, producto, crearproducto, detalles_producto, modificarproducto, agregar_a_pedido, pedidoscli, actualizar_cantidad, eliminar_pedido, 
+    crearcuenta, salir, producto, crearproducto, detalles_producto, modificarproducto, 
+    agregar_a_pedido, pedidoscli, actualizar_cantidad, eliminar_pedido, 
+    crearpersona, dashboard, crearpersona, modificarpersona, eliminarpersona
 )
 urlpatterns = [
     path('carro/', carro, name='carro'),
@@ -19,12 +21,18 @@ urlpatterns = [
     path('tierra/', tierra, name='tierra'),
     path('salir/', salir, name='salir'),
     path('productos/', producto, name='productos'),
+    path('crearpersona/',crearpersona,name='crearpersona'),
+    path('modificarpersona/<id>',modificarpersona, name='modificarpersona'),
+    path('eliminarpersona/<id>',eliminarpersona,name='eliminarpersona'),
     path('detalles_producto/<id>', detalles_producto, name='detalles_producto'),
     path('modificarproducto/<id>', modificarproducto, name='modificarproducto'),
     path('crearproducto/', crearproducto, name='crearproducto'),
     path('agregar_a_pedido/<str:producto_id>/', agregar_a_pedido, name='agregar_a_pedido'),
     path('actualizar_cantidad/<int:pedido_id>/', actualizar_cantidad, name='actualizar_cantidad'),
     path('eliminar_pedido/<int:pedido_id>/', eliminar_pedido, name='eliminar_pedido'),
+    path('dashboard/', dashboard, name='dashboard'),
+    
+
 ]
 
 if settings.DEBUG:

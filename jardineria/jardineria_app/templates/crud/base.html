@@ -61,6 +61,17 @@
                         {% endif%}
                     </ul>
                 </div>
+                
+                <div class="btn-group">
+                    {% if perms.jardineria.add_usuario %}
+                    <button type="button" class="btn btn-success dropdown-toggle"
+                        data-bs-toggle="dropdown">Administrar Usuarios</button>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="{% url 'dashboard' %}">Listado de Usuarios</a></li>
+                        <li><a class="dropdown-item" href="{% url 'crearpersona' %}">Crear Usuario</a></li>
+                    </ul>
+                    {% endif%}
+                </div>
                 <a href="{% url 'salir' %}">
                     <button type="button" class="btn btn-danger">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"

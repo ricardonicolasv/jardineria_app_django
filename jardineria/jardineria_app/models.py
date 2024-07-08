@@ -5,11 +5,21 @@ from .tipos import *
 from django.contrib.auth.models import AbstractUser
 from django.conf import settings
 
-
 class User(AbstractUser):
-    rut=models.CharField(max_length=12, null=False)
+    rut=models.CharField(max_length=10, null=False)
     direccion=models.CharField(max_length=500, null=False)
 
+class Persona(models.Model):
+    rut=models.CharField(max_length=10, primary_key=True)
+    username=models.CharField(max_length=20, null=False)
+    first_name=models.CharField(max_length=50, null=False)
+    last_name=models.CharField(max_length=50, null=False)
+    direccion=models.CharField(max_length=100, null=False)
+    email=models.EmailField(max_length=100, null=False)
+    
+    def __str__(self):
+        return f"{self.rut} - {self.nombre} {self.apellido}"
+    
 class Producto (models.Model):
     codigo_producto=models.CharField(max_length=50,primary_key=True)
     nombre_producto=models.CharField(max_length=50, null=False)

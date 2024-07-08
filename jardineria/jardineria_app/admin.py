@@ -1,6 +1,6 @@
 from django.contrib import admin
 from .models import *
-from .forms import ProductoForm
+from .forms import ProductoForm, User
 
 # Register your models here.
 class AdmProducto(admin.ModelAdmin):
@@ -9,5 +9,8 @@ class AdmProducto(admin.ModelAdmin):
         list_filter=['cantidad','tipo','precio']
         form = ProductoForm
 
+class AdmUser(admin.ModelAdmin):
+        filter_horizontal = ('groups', 'user_permissions')
+
 admin.site.register(Producto, AdmProducto)
-admin.site.register(User)
+admin.site.register(User, AdmUser)

@@ -1,0 +1,51 @@
+{% extends "crud/base.html" %}
+
+{% block contenido %}
+<div class="container mt-4">
+  <!--['rut','nombre','apellido','f_nacto','email','imagen']-->
+
+  <div class="row">
+    <div class="col-sm-1">
+      
+    </div>
+ 
+  <div class="col-sm-10">
+    <h3>Lista de usuarios</h3>
+    <a href="{% url "crearpersona" %}" role='button' class='btn btn-sm text-primary' style="font-weight:bold">+ Crear Persona</a>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>USERNAME</th>
+          <th>NOMBRE</th>
+          <th>APELLIDOS</th>
+          <th>E-MAIL</th>
+          <th>RUT</th>
+          
+          <th>ACCIONES</th>
+        </tr>
+      </thead>
+      <tbody>
+
+        {% for p in usuario %}
+        <td>{{p.id}}</td>
+        <td>{{p.username}}</td>
+        <td>{{p.first_name}}</td>
+        <td>{{p.last_name}}</td>
+        <td>{{p.email}}</td>
+        <td>{{p.rut}}</td>
+        
+        <td><a href="" role="button" class="btn btn-info btn-sm text-light">Ver detalles</a></td>
+        </tr>
+        {% endfor %}
+        <tr>
+      </tbody>
+    </table>
+
+  </div>
+  <div class="col-sm-1"></div>
+</div>
+</div>
+
+
+{% endblock contenido %}

@@ -32,6 +32,9 @@
                 {% csrf_token %}
                 <button type="submit" class="btn btn-success btn-sm text-light">Agregar al Carro</button>
               </form>
+              {% if perms.jardineria.change_producto%}
+                <a href="{% url "modificarproducto" p.codigo_producto %}" role="button" class="btn btn-warning btn-sm text-light mt-2">Modificar</a> </td>
+                {% endif %}
             </td>
           </tr>
           {% empty %}
