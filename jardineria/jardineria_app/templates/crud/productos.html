@@ -34,7 +34,7 @@
         <td>{{p.precio}}</td>
         
         <td><a href="{% url "detalles_producto" p.codigo_producto %}" role="button" class="btn btn-info btn-sm text-light">Ver detalles</a>
-        {% if perms.jardineria.change_producto%}
+        {% if perms.jardineria.change_producto %}
         <a href="{% url "modificarproducto" p.codigo_producto %}" role="button" class="btn btn-warning btn-sm text-light mt-2">Modificar</a> </td>
         {% endif %}
       </tr>

@@ -3,10 +3,11 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserChangeForm
 from django.shortcuts import get_object_or_404, redirect
 from django.views import View
-from .forms import  UserForm,ProductoForm,UpdProductoForm
+from .forms import  UserForm,ProductoForm,UpdProductoForm,UpdUserForm
 from django.contrib import messages
-from django.contrib.auth import logout
-from django.contrib.auth.models import User
+from django.contrib.auth import logout, get_user_model
+#from django.contrib.auth.models import User
+from jardineria_app.models import User
 from .models import Producto,Pedido
 from .tipos import TIPO_PRODUCTO
 from django.contrib.auth.decorators import login_required, permission_required
@@ -101,7 +102,6 @@ def modificarproducto(request,id):
     return render(request,'crud/modificarproducto.html',datos)
 ### FUNCIONES DE PEDIDO-------------------------############################################################
 @login_required
-@permission_required('jardineria_app.view_pedido')
 def seguimiento_pedido(request):
     pedidos = Pedido.objects.filter(usuario=request.user)
     detalles_pedidos = []
@@ -125,7 +125,6 @@ def seguimiento_pedido(request):
     return render(request, 'crud/seguimiento_pedido.html', context)
 
 @login_required
-@permission_required('jardineria_app.view_pedido')
 def detalle_pedido(request):
     pedidos = Pedido.objects.filter(usuario=request.user)
     
@@ -201,12 +200,13 @@ def crearcuenta(request):
         form=UserForm(data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect(to="login")
+            return redirect(to="home")
     datos={
         "form":form
     }
     return render(request, 'registration/crearcuenta.html',datos)
 
+<<<<<<< HEAD
 class ListadoUsuariosView(ListView):
     model = User
     template_name = 'registration/listado_usuarios.html'
@@ -227,6 +227,46 @@ def modificar_usuario(request, user_id):
         form = UserChangeForm(instance=usuario)
     return render(request, 'registration/modificar_usuarios.html', {'form': form, 'usuario': usuario})
 
+=======
+@login_required
+@permission_required('auth.view_user')
+def listar_usuarios(request):
+    User = get_user_model()
+    usuarios = User.objects.all()
+    datos = {
+        "usuarios": usuarios
+    }
+    return render(request, 'crud/usuarios.html', datos)
+
+@login_required
+@permission_required('auth.view_user')
+def detalles_usuario(request, user_id):
+    User = get_user_model()
+    usuario = get_object_or_404(User, id=user_id)
+    datos = {
+        "usuario": usuario
+    }
+    return render(request, 'crud/detalles_usuario.html', datos)
+
+@login_required
+@permission_required('auth.change_user', raise_exception=True)
+def modificar_usuario(request, user_id):
+    User = get_user_model()
+    usuario = get_object_or_404(User, id=user_id)
+    
+    if request.method == 'POST':
+        form = UpdUserForm(request.POST, instance=usuario)
+        if form.is_valid():
+            form.save()
+            return redirect('detalles_usuario', user_id=user_id)  # Redirecciona al detalle del usuario modificado
+    else:
+        form = UpdUserForm(instance=usuario)
+    
+    datos = {
+        'form': form
+    }
+    return render(request, 'crud/modificar_usuario.html', datos)
+>>>>>>> r_jardineria
 
 def salir(request):
     logout(request)
@@ -240,8 +280,85 @@ def admin_page(request):
 def base(request):
     return render(request, 'crud/base.html')
 
-def pedido(request):
-    return render(request, 'crud/pedidoscli.html')
 
 def home(request):
     return render(request, 'crud/home.html')
+
+#########################################funciones para controles de pedido de usuarios
+
+@login_required
+@permission_required('auth.view_user')
+def listar_usuarios_con_pedidos(request):
+    usuarios_con_pedidos = User.objects.filter(pedido__isnull=False).distinct()
+    datos = {
+        "usuarios": usuarios_con_pedidos
+    }
+    return render(request, 'crud/usuarios_con_pedidos.html', datos)
+
+@login_required
+@permission_required('auth.view_user')
+def detalles_pedidos_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    pedidos = Pedido.objects.filter(usuario=usuario)
+    
+    detalles_pedidos = []
+    total_pedido = 0
+
+    for pedido in pedidos:
+        subtotal = pedido.producto.precio * pedido.cantidad
+        total_pedido += subtotal
+        detalles_pedidos.append({
+            "pedido": pedido,
+            "producto": pedido.producto,
+            "cantidad": pedido.cantidad,
+            "subtotal": subtotal
+        })
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "modificar":
+            pedido_id = request.POST.get("pedido_id")
+            cantidad = int(request.POST.get("cantidad"))
+            pedido = get_object_or_404(Pedido, id=pedido_id)
+            pedido.cantidad = cantidad
+            pedido.save()
+            messages.success(request, "Pedido modificado correctamente.")
+        elif action == "eliminar":
+            pedido_id = request.POST.get("pedido_id")
+            pedido = get_object_or_404(Pedido, id=pedido_id)
+            pedido.delete()
+            messages.success(request, "Pedido eliminado correctamente.")
+        return redirect('detalles_pedidos_usuario', user_id=user_id)
+
+    datos = {
+        "usuario": usuario,
+        "detalles_pedidos": detalles_pedidos,
+        "total_pedido": total_pedido
+    }
+    return render(request, 'crud/detalles_pedidos_usuario.html', datos)
+
+
+@login_required
+@permission_required('auth.change_user')
+def agregar_pedido_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    productos = Producto.objects.all()
+
+    if request.method == "POST":
+        for producto in productos:
+            cantidad_key = f"cantidad_{producto.codigo_producto}"
+            if cantidad_key in request.POST:
+                cantidad = int(request.POST[cantidad_key])
+                if cantidad > 0:
+                    codigo_producto = request.POST[f"producto_{producto.codigo_producto}"]
+                    producto = get_object_or_404(Producto, codigo_producto=codigo_producto)
+                    Pedido.objects.create(usuario=usuario, producto=producto, cantidad=cantidad)
+                    messages.success(request, f"Producto {producto.nombre_producto} agregado al carro.")
+
+        return redirect('agregar_pedido_usuario', user_id=user_id)
+
+    datos = {
+        "usuario": usuario,
+        "productos": productos
+    }
+    return render(request, 'crud/agregar_pedido_usuario.html', datos)
