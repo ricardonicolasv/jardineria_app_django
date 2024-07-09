@@ -198,7 +198,7 @@ def crearcuenta(request):
         form=UserForm(data=request.POST)
         if form.is_valid():
             form.save()
-            return redirect(to="login")
+            return redirect(to="home")
     datos={
         "form":form
     }
@@ -258,3 +258,82 @@ def base(request):
 
 def home(request):
     return render(request, 'crud/home.html')
+
+#########################################funciones para controles de pedido de usuarios
+
+@login_required
+@permission_required('auth.view_user')
+def listar_usuarios_con_pedidos(request):
+    usuarios_con_pedidos = User.objects.filter(pedido__isnull=False).distinct()
+    datos = {
+        "usuarios": usuarios_con_pedidos
+    }
+    return render(request, 'crud/usuarios_con_pedidos.html', datos)
+
+@login_required
+@permission_required('auth.view_user')
+def detalles_pedidos_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    pedidos = Pedido.objects.filter(usuario=usuario)
+    
+    detalles_pedidos = []
+    total_pedido = 0
+
+    for pedido in pedidos:
+        subtotal = pedido.producto.precio * pedido.cantidad
+        total_pedido += subtotal
+        detalles_pedidos.append({
+            "pedido": pedido,
+            "producto": pedido.producto,
+            "cantidad": pedido.cantidad,
+            "subtotal": subtotal
+        })
+
+    if request.method == "POST":
+        action = request.POST.get("action")
+        if action == "modificar":
+            pedido_id = request.POST.get("pedido_id")
+            cantidad = int(request.POST.get("cantidad"))
+            pedido = get_object_or_404(Pedido, id=pedido_id)
+            pedido.cantidad = cantidad
+            pedido.save()
+            messages.success(request, "Pedido modificado correctamente.")
+        elif action == "eliminar":
+            pedido_id = request.POST.get("pedido_id")
+            pedido = get_object_or_404(Pedido, id=pedido_id)
+            pedido.delete()
+            messages.success(request, "Pedido eliminado correctamente.")
+        return redirect('detalles_pedidos_usuario', user_id=user_id)
+
+    datos = {
+        "usuario": usuario,
+        "detalles_pedidos": detalles_pedidos,
+        "total_pedido": total_pedido
+    }
+    return render(request, 'crud/detalles_pedidos_usuario.html', datos)
+
+
+@login_required
+@permission_required('auth.change_user')
+def agregar_pedido_usuario(request, user_id):
+    usuario = get_object_or_404(User, id=user_id)
+    productos = Producto.objects.all()
+
+    if request.method == "POST":
+        for producto in productos:
+            cantidad_key = f"cantidad_{producto.codigo_producto}"
+            if cantidad_key in request.POST:
+                cantidad = int(request.POST[cantidad_key])
+                if cantidad > 0:
+                    codigo_producto = request.POST[f"producto_{producto.codigo_producto}"]
+                    producto = get_object_or_404(Producto, codigo_producto=codigo_producto)
+                    Pedido.objects.create(usuario=usuario, producto=producto, cantidad=cantidad)
+                    messages.success(request, f"Producto {producto.nombre_producto} agregado al carro.")
+
+        return redirect('agregar_pedido_usuario', user_id=user_id)
+
+    datos = {
+        "usuario": usuario,
+        "productos": productos
+    }
+    return render(request, 'crud/agregar_pedido_usuario.html', datos)

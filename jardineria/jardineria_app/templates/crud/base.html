@@ -46,6 +46,11 @@
                                 Usuarios
                             </button>
                         </a>
+                        <a href="{% url 'listar_usuarios_con_pedidos' %}">
+                            <button type="button" class="btn btn-success">
+                                Pedidos Usuarios
+                            </button>
+                        </a>
                     {% endif %}
                     <a href="{% url 'pedidoscli' %}">
                         <button type="button" class="btn btn-success">
@@ -54,7 +59,7 @@
                     </a>
                     <div class="btn-group">
                         <button type="button" class="btn btn-success dropdown-toggle"
-                            data-bs-toggle="dropdown">Administrar Productos</button>
+                            data-bs-toggle="dropdown">Todos los Productos</button>
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="{% url 'productos' %}">Listado de productos</a></li>
                             {% if perms.jardineria.add_producto %}
