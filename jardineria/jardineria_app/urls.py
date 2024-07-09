@@ -2,27 +2,12 @@ from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
 from .views import (
-<<<<<<< HEAD
-    detalle_pedido, 
-    flores, base, maceteros, pedido, suculentas, sustratos, tierra, home,seguimiento_pedido,ListadoUsuariosView,detalles_usuario,modificar_usuario,
-    crearcuenta, salir, producto, crearproducto, detalles_producto, modificarproducto, agregar_a_pedido, pedidoscli, actualizar_cantidad, eliminar_pedido, 
-=======
     detalle_pedido, flores, base, maceteros, listar_usuarios, detalles_usuario, modificar_usuario, suculentas, sustratos, tierra, home, seguimiento_pedido,
     crearcuenta, salir, producto, crearproducto, detalles_producto, modificarproducto, agregar_a_pedido, pedidoscli, actualizar_cantidad, eliminar_pedido, listar_usuarios_con_pedidos, detalles_pedidos_usuario, agregar_pedido_usuario
->>>>>>> r_jardineria
 )
 
 urlpatterns = [
-<<<<<<< HEAD
-    path('usuarios/', ListadoUsuariosView.as_view(), name='listado_usuarios'),
-    path('usuarios/detalles/<int:user_id>/', detalles_usuario, name='detalles_usuario'),
-    path('usuarios/modificar/<int:user_id>/', modificar_usuario, name='modificar_usuario'),
-    path('detalle_pedido/', detalle_pedido, name='detalle_pedido'),
-    path('flores/', flores, name='flores'),
-    path('base/', base, name='base'),
-=======
     # Home
->>>>>>> r_jardineria
     path('', home, name='home'),
     path('base/', base, name='base'),
 
